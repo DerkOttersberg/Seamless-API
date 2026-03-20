@@ -1,6 +1,7 @@
 package com.derko.seamlessapi;
 
 import com.derko.seamlessapi.api.FoodBuffRegistration;
+import com.derko.seamlessapi.api.ComboRegistration;
 
 import java.util.Collections;
 import java.util.Map;
@@ -29,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class SatiationAPI {
 
     private static final Map<String, FoodBuffRegistration> PENDING = new ConcurrentHashMap<>();
+    private static final Map<String, ComboRegistration> PENDING_COMBOS = new ConcurrentHashMap<>();
     private static volatile boolean locked = false;
 
     private SatiationAPI() {}
@@ -56,6 +58,28 @@ public final class SatiationAPI {
     }
 
     /**
+     * Register a custom combo definition consumed by Advanced Food System.
+     *
+     * @param comboId      Unique combo ID, e.g. {@code "mymod:combo_scholar"}
+     * @param registration Combo details and effects
+     * @throws IllegalStateException if called after load has completed
+     */
+    public static void registerCombo(String comboId, ComboRegistration registration) {
+        if (locked) {
+            throw new IllegalStateException(
+                    "[SeamlessAPI] Too late to register combo '" + comboId + "'. " +
+                    "Call SatiationAPI.registerCombo() in your mod constructor or FMLCommonSetupEvent.");
+        }
+        if (comboId == null || comboId.isBlank()) {
+            throw new IllegalArgumentException("[SeamlessAPI] comboId cannot be null or blank.");
+        }
+        if (registration == null) {
+            throw new IllegalArgumentException("[SeamlessAPI] ComboRegistration cannot be null.");
+        }
+        PENDING_COMBOS.put(comboId, registration);
+    }
+
+    /**
      * Called by the Advanced Food System main mod once after all mods have set up.
      * Locks the registry and returns all registered entries.
      *
@@ -64,6 +88,17 @@ public final class SatiationAPI {
     public static Map<String, FoodBuffRegistration> freezeAndGetAll() {
         locked = true;
         return Collections.unmodifiableMap(PENDING);
+    }
+
+    /**
+     * Called by the Advanced Food System main mod after setup.
+     * Locks the combo registry and returns all registered combo entries.
+     *
+     * <p><strong>Do not call this from your code.</strong>
+     */
+    public static Map<String, ComboRegistration> freezeAndGetCombos() {
+        locked = true;
+        return Collections.unmodifiableMap(PENDING_COMBOS);
     }
 
     /** Returns whether the registry has been frozen (i.e. past load-complete). */

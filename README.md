@@ -76,10 +76,35 @@ public class MyModFoods {
 
 Call `MyModFoods.setup()` from your mod's constructor or `FMLCommonSetupEvent`.
 
+## Combo Registration Example
+
+```java
+import com.derko.seamlessapi.SatiationAPI;
+import com.derko.seamlessapi.api.ComboRegistration;
+
+public class MyModCombos {
+    public static void setup() {
+        SatiationAPI.registerCombo(
+            "mymod:combo_scholar",
+            ComboRegistration.builder()
+                .requiresFood("minecraft:apple")
+                .requiresFood("minecraft:bread")
+                .requiresFood("mymod:crystal_berry")
+                .effect("xp_gain", 0.10)
+                .effect("hunger_efficiency", 0.03)
+                .capstone(true)
+                .grantsFinalHeart(false)
+                .build()
+        );
+    }
+}
+```
+
 ## API Reference
 
 ### Registration
 - `SatiationAPI.registerFood(itemId, registration)` — Register a custom food
+- `SatiationAPI.registerCombo(comboId, registration)` — Register a custom combo
 
 ### Queries
 - `BuffQueryAPI.getAllBuffs(player)` — Get all active buffs
@@ -127,6 +152,7 @@ Seamless-API/
 │   ├── SeamlessApiMod.java            # Mod class (no gameplay logic)
 │   └── api/
 │       ├── FoodBuffRegistration.java  # Food config builder
+│       ├── ComboRegistration.java     # Combo config builder
 │       ├── BuffData.java              # Immutable buff snapshot
 │       ├── BuffQueryAPI.java          # Query API for active buffs
 │       ├── BuffEvents.java            # Event hooks
