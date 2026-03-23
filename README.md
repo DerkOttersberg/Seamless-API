@@ -1,8 +1,14 @@
 # Seamless-API
 
-**A lightweight, extensible NeoForge API for dynamic food buff systems.**
+**A lightweight, extensible NeoForge API library for multiple Seamless mod systems.**
 
-Seamless-API enables any modder to register custom foods with configurable buffs (walk speed, attack speed, damage reduction, regeneration, etc.) without modifying the Advanced Food System mod directly. Perfect for:
+Seamless-API enables any modder to register systems across Seamless mods through stable integration hooks.
+
+Current modules:
+- **Food Buff API** (stable) — register foods, combos, modifiers, queries, events
+- **Deconstruction API** (new) — register item deconstruction mappings and output modifiers
+
+Food system use cases:
 
 - **Food mods** → Spicy peppers, magical fruits, potions
 - **Difficulty mods** → Special foods that help with specific challenges
@@ -41,7 +47,7 @@ dependencies {
 }
 ```
 
-## Usage Example
+## Food Usage Example
 
 ```java
 import com.derko.seamlessapi.SatiationAPI;
@@ -76,6 +82,45 @@ public class MyModFoods {
 
 Call `MyModFoods.setup()` from your mod's constructor or `FMLCommonSetupEvent`.
 
+## Deconstruction Usage Example
+
+```java
+import com.derko.seamlessapi.DeconstructionAPI;
+import com.derko.seamlessapi.api.deconstruction.DeconstructionContext;
+import com.derko.seamlessapi.api.deconstruction.DeconstructionRegistration;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class MyModDeconstruction {
+    public static void setup() {
+        DeconstructionAPI.registerDeconstruction(
+            "mymod:bronze_sword",
+            DeconstructionRegistration.builder()
+                .ingredient("mymod:bronze_ingot", 2.0)
+                .ingredient("minecraft:stick", 1.0)
+                .damageScalingEnabled(true)
+                .build()
+        );
+
+        DeconstructionAPI.registerModifier((DeconstructionContext ctx, Map<String, Integer> output) -> {
+            if (!ctx.damageable() || ctx.durabilityFraction() >= 0.90D) {
+                return output;
+            }
+
+            Map<String, Integer> reduced = new LinkedHashMap<>();
+            output.forEach((item, count) -> {
+                int adjusted = (int) Math.floor(count * 0.9D);
+                if (adjusted > 0) {
+                    reduced.put(item, adjusted);
+                }
+            });
+            return reduced;
+        });
+    }
+}
+```
+
 ## Combo Registration Example
 
 ```java
@@ -105,6 +150,8 @@ public class MyModCombos {
 ### Registration
 - `SatiationAPI.registerFood(itemId, registration)` — Register a custom food
 - `SatiationAPI.registerCombo(comboId, registration)` — Register a custom combo
+- `DeconstructionAPI.registerDeconstruction(itemId, registration)` — Register deconstruction units for an item
+- `DeconstructionAPI.registerModifier(modifier)` — Register output modifier hook
 
 ### Queries
 - `BuffQueryAPI.getAllBuffs(player)` — Get all active buffs
@@ -149,6 +196,8 @@ Advanced Food System mod (for gameplay; API works standalone)
 Seamless-API/
 ├── src/main/java/com/derko/seamlessapi/
 │   ├── SatiationAPI.java              # Main registration entry point
+│   ├── DeconstructionAPI.java         # Deconstruction registration + modifier API
+│   ├── SeamlessAPI.java               # Unified facade (optional)
 │   ├── SeamlessApiMod.java            # Mod class (no gameplay logic)
 │   └── api/
 │       ├── FoodBuffRegistration.java  # Food config builder
@@ -157,6 +206,10 @@ Seamless-API/
 │       ├── BuffQueryAPI.java          # Query API for active buffs
 │       ├── BuffEvents.java            # Event hooks
 │       └── BuffModifiers.java         # Dynamic modifier system
+│       └── deconstruction/
+│           ├── DeconstructionRegistration.java
+│           ├── DeconstructionContext.java
+│           └── DeconstructionModifier.java
 ├── API_GUIDE.md                       # Comprehensive usage guide
 └── README.md                          # This file
 ```

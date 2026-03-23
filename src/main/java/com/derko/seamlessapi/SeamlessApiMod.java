@@ -6,8 +6,9 @@ import net.neoforged.fml.common.Mod;
 /**
  * SeamlessAPI mod.
  *
- * Other mods depend on this mod to register custom food buffs via {@link SatiationAPI}.
- * This mod contains no gameplay logic of its own — it only provides the registration API.
+ * Other mods depend on this mod to register features across Seamless systems
+ * (food buffs, deconstruction hooks, and future modules).
+ * This mod contains no gameplay logic of its own — it only provides registration APIs.
  *
  * Example usage in another mod's constructor:
  * <pre>

@@ -31,7 +31,8 @@ public final class SatiationAPI {
 
     private static final Map<String, FoodBuffRegistration> PENDING = new ConcurrentHashMap<>();
     private static final Map<String, ComboRegistration> PENDING_COMBOS = new ConcurrentHashMap<>();
-    private static volatile boolean locked = false;
+    private static volatile boolean foodLocked = false;
+    private static volatile boolean comboLocked = false;
 
     private SatiationAPI() {}
 
@@ -42,8 +43,8 @@ public final class SatiationAPI {
      * @param registration The buff configuration built via {@link FoodBuffRegistration#builder()}
      * @throws IllegalStateException if called after load has completed
      */
-    public static void registerFood(String itemId, FoodBuffRegistration registration) {
-        if (locked) {
+    public static synchronized void registerFood(String itemId, FoodBuffRegistration registration) {
+        if (foodLocked) {
             throw new IllegalStateException(
                     "[SeamlessAPI] Too late to register food '" + itemId + "'. " +
                     "Call SatiationAPI.registerFood() in your mod constructor or FMLCommonSetupEvent.");
@@ -64,8 +65,8 @@ public final class SatiationAPI {
      * @param registration Combo details and effects
      * @throws IllegalStateException if called after load has completed
      */
-    public static void registerCombo(String comboId, ComboRegistration registration) {
-        if (locked) {
+    public static synchronized void registerCombo(String comboId, ComboRegistration registration) {
+        if (comboLocked) {
             throw new IllegalStateException(
                     "[SeamlessAPI] Too late to register combo '" + comboId + "'. " +
                     "Call SatiationAPI.registerCombo() in your mod constructor or FMLCommonSetupEvent.");
@@ -85,9 +86,9 @@ public final class SatiationAPI {
      *
      * <p><strong>Do not call this from your code.</strong>
      */
-    public static Map<String, FoodBuffRegistration> freezeAndGetAll() {
-        locked = true;
-        return Collections.unmodifiableMap(PENDING);
+    public static synchronized Map<String, FoodBuffRegistration> freezeAndGetAll() {
+        foodLocked = true;
+        return Map.copyOf(PENDING);
     }
 
     /**
@@ -96,13 +97,13 @@ public final class SatiationAPI {
      *
      * <p><strong>Do not call this from your code.</strong>
      */
-    public static Map<String, ComboRegistration> freezeAndGetCombos() {
-        locked = true;
-        return Collections.unmodifiableMap(PENDING_COMBOS);
+    public static synchronized Map<String, ComboRegistration> freezeAndGetCombos() {
+        comboLocked = true;
+        return Map.copyOf(PENDING_COMBOS);
     }
 
     /** Returns whether the registry has been frozen (i.e. past load-complete). */
     public static boolean isLocked() {
-        return locked;
+        return foodLocked || comboLocked;
     }
 }
