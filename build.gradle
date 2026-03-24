@@ -4,7 +4,7 @@ plugins {
     id 'net.neoforged.moddev' version '2.0.78'
 }
 
-version = '1.0.0'
+version = '1.0.1'
 group = 'com.derko.seamlessapi'
 
 base {
@@ -24,6 +24,7 @@ neoForge {
 tasks.withType(ProcessResources).configureEach {
     filesMatching(['META-INF/neoforge.mods.toml']) {
         expand([
+            version                : project.version,
             neo_version_range      : neo_version_range,
             loader_version_range   : loader_version_range,
             minecraft_version_range: minecraft_version_range

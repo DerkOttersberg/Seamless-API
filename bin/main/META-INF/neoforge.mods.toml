@@ -7,8 +7,8 @@ modId = "seamlessapi"
 version = "1.0.0"
 displayName = "SeamlessAPI"
 description = '''
-SeamlessAPI — library mod for the Advanced Food System.
-Allows other mods to register custom food buffs and integrate with the buff system.
+SeamlessAPI — shared library mod for Seamless systems.
+Allows other mods to register food buffs, deconstruction hooks, and future integrations.
 '''
 
 [[dependencies.seamlessapi]]

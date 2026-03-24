@@ -4,7 +4,7 @@ license = "MIT"
 
 [[mods]]
 modId = "seamlessapi"
-version = "1.0.0"
+version = "${version}"
 displayName = "SeamlessAPI"
 description = '''
 SeamlessAPI — shared library mod for Seamless systems.
