@@ -1,7 +1,6 @@
 package com.derko.seamlessapi;
 
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.common.Mod;
+import net.fabricmc.api.ModInitializer;
 
 /**
  * SeamlessAPI mod.
@@ -21,11 +20,11 @@ import net.neoforged.fml.common.Mod;
  *           .build());
  * </pre>
  */
-@Mod(SeamlessApiMod.MOD_ID)
-public class SeamlessApiMod {
+public class SeamlessApiMod implements ModInitializer {
     public static final String MOD_ID = "seamlessapi";
 
-    public SeamlessApiMod(IEventBus modEventBus) {
+    @Override
+    public void onInitialize() {
         // No logic — purely a registry API
     }
 }

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "seamlessapi",
+  "version": "${version}",
+  "name": "Seamless API",
+  "description": "Shared registration API for Seamless ecosystem mods.",
+  "authors": [
+    "derko"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.derko.seamlessapi.SeamlessApiMod"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "1.20.1",
+    "java": ">=17"
+  }
+}

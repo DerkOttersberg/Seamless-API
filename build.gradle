@@ -1,43 +1,49 @@
 plugins {
-    id 'java-library'
+    id 'fabric-loom' version "${loom_version}"
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.78'
 }
 
-version = '1.0.0'
-group = 'com.derko.seamlessapi'
+version = project.mod_version
+group = project.maven_group
 
 base {
-    archivesName = 'seamlessapi'
+    archivesName = project.archives_base_name
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://maven.fabricmc.net/' }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+}
+
+processResources {
+    inputs.property 'version', project.version
+
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 17
 }
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+
     withSourcesJar()
-}
-
-neoForge {
-    version = neo_version
-    // No run configs — this is a library/API mod only
-}
-
-tasks.withType(ProcessResources).configureEach {
-    filesMatching(['META-INF/neoforge.mods.toml']) {
-        expand([
-            neo_version_range      : neo_version_range,
-            loader_version_range   : loader_version_range,
-            minecraft_version_range: minecraft_version_range
-        ])
-    }
 }
 
 publishing {
     publications {
-        register('mavenJava', MavenPublication) {
+        mavenJava(MavenPublication) {
             from components.java
-            artifactId = 'seamlessapi'
-            groupId = 'com.derko.seamlessapi'
-            version = project.version
         }
     }
     repositories {

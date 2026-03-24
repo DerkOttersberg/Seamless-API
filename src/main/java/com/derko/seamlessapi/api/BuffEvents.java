@@ -1,7 +1,6 @@
 package com.derko.seamlessapi.api;
 
-import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.bus.api.Event;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 /**
  * Event hooks for buff lifecycle.
@@ -27,16 +26,16 @@ public final class BuffEvents {
      * Fired when a buff is successfully applied to a player.
      * Fired on server thread after buff is added to storage.
      */
-    public static final class BuffAppliedEvent extends Event {
-        private final ServerPlayer player;
+    public static final class BuffAppliedEvent {
+        private final ServerPlayerEntity player;
         private final BuffData buff;
 
-        public BuffAppliedEvent(ServerPlayer player, BuffData buff) {
+        public BuffAppliedEvent(ServerPlayerEntity player, BuffData buff) {
             this.player = player;
             this.buff = buff;
         }
 
-        public ServerPlayer getPlayer() { return player; }
+        public ServerPlayerEntity getPlayer() { return player; }
         public BuffData getBuff() { return buff; }
     }
 
@@ -44,8 +43,8 @@ public final class BuffEvents {
      * Fired when a buff is removed (either expired or via API call).
      * Fired on server thread after buff is removed from storage.
      */
-    public static final class BuffRemovedEvent extends Event {
-        private final ServerPlayer player;
+    public static final class BuffRemovedEvent {
+        private final ServerPlayerEntity player;
         private final BuffData buff;
         private final RemovalReason reason;
 
@@ -60,13 +59,13 @@ public final class BuffEvents {
             DISPLACED
         }
 
-        public BuffRemovedEvent(ServerPlayer player, BuffData buff, RemovalReason reason) {
+        public BuffRemovedEvent(ServerPlayerEntity player, BuffData buff, RemovalReason reason) {
             this.player = player;
             this.buff = buff;
             this.reason = reason;
         }
 
-        public ServerPlayer getPlayer() { return player; }
+        public ServerPlayerEntity getPlayer() { return player; }
         public BuffData getBuff() { return buff; }
         public RemovalReason getReason() { return reason; }
     }
@@ -76,15 +75,15 @@ public final class BuffEvents {
      * Fired on server thread.
      * Call {@link #setCanceled(true)} to prevent the buff from being applied.
      */
-    public static final class BuffApplyingEvent extends Event {
-        private final ServerPlayer player;
+    public static final class BuffApplyingEvent {
+        private final ServerPlayerEntity player;
         private final String foodSource;
         private final String primaryBuffId;
         private double magnitude;
         private double healthBonus;
         private boolean canceled = false;
 
-        public BuffApplyingEvent(ServerPlayer player, String foodSource, String primaryBuffId,
+        public BuffApplyingEvent(ServerPlayerEntity player, String foodSource, String primaryBuffId,
                                  double magnitude, double healthBonus) {
             this.player = player;
             this.foodSource = foodSource;
@@ -93,7 +92,7 @@ public final class BuffEvents {
             this.healthBonus = healthBonus;
         }
 
-        public ServerPlayer getPlayer() { return player; }
+        public ServerPlayerEntity getPlayer() { return player; }
         public String getFoodSource() { return foodSource; }
         public String getPrimaryBuffId() { return primaryBuffId; }
         public double getMagnitude() { return magnitude; }

@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Static entry point for the Advanced Food System API.
  *
  * <p>Call {@link #registerFood(String, FoodBuffRegistration)} from your mod's constructor or
- * {@code FMLCommonSetupEvent} handler <em>before</em> load completes.
+ * your mod initializer or common setup path <em>before</em> load completes.
  * After load is complete, registrations are frozen and an exception is thrown.
  *
  * <p>Example:
@@ -47,7 +47,7 @@ public final class SatiationAPI {
         if (foodLocked) {
             throw new IllegalStateException(
                     "[SeamlessAPI] Too late to register food '" + itemId + "'. " +
-                    "Call SatiationAPI.registerFood() in your mod constructor or FMLCommonSetupEvent.");
+                    "Call SatiationAPI.registerFood() during mod initialization.");
         }
         if (itemId == null || itemId.isBlank()) {
             throw new IllegalArgumentException("[SeamlessAPI] itemId cannot be null or blank.");
@@ -69,7 +69,7 @@ public final class SatiationAPI {
         if (comboLocked) {
             throw new IllegalStateException(
                     "[SeamlessAPI] Too late to register combo '" + comboId + "'. " +
-                    "Call SatiationAPI.registerCombo() in your mod constructor or FMLCommonSetupEvent.");
+                    "Call SatiationAPI.registerCombo() during mod initialization.");
         }
         if (comboId == null || comboId.isBlank()) {
             throw new IllegalArgumentException("[SeamlessAPI] comboId cannot be null or blank.");

@@ -6,7 +6,7 @@ import java.util.Objects;
  * Immutable snapshot of a single active buff on a player.
  *
  * <p>This is what you get when querying the API for active buffs.
- * Values are current as of query-time; modify via {@link BuffQueryAPI#removeBuffsWithId(net.minecraft.server.level.ServerPlayer, String)}.
+ * Values are current as of query-time; modify via {@link BuffQueryAPI#removeBuffsWithId(net.minecraft.server.network.ServerPlayerEntity, String)}.
  */
 public final class BuffData {
 
