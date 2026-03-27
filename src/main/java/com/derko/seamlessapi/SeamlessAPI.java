@@ -4,6 +4,8 @@ import com.derko.seamlessapi.api.ComboRegistration;
 import com.derko.seamlessapi.api.FoodBuffRegistration;
 import com.derko.seamlessapi.api.deconstruction.DeconstructionModifier;
 import com.derko.seamlessapi.api.deconstruction.DeconstructionRegistration;
+import com.derko.seamlessapi.api.visual.SpinTumbleAnimator;
+import com.derko.seamlessapi.api.visual.ThrownItemVisualProfile;
 
 /**
  * Unified facade for Seamless-API modules.
@@ -39,6 +41,19 @@ public final class SeamlessAPI {
 
         public static void registerModifier(DeconstructionModifier modifier) {
             DeconstructionAPI.registerModifier(modifier);
+        }
+    }
+
+    public static final class Visual {
+        private Visual() {
+        }
+
+        public static ThrownItemVisualProfile swordthrowThrownItemProfile() {
+            return ThrownItemVisualProfile.swordthrowDefaults();
+        }
+
+        public static SpinTumbleAnimator swordthrowSpinAnimator() {
+            return SpinTumbleAnimator.swordthrowDefaults();
         }
     }
 }
