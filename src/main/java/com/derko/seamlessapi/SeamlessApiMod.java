@@ -1,7 +1,8 @@
 package com.derko.seamlessapi;
 
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.common.Mod;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 /**
  * SeamlessAPI mod.
@@ -25,7 +26,8 @@ import net.neoforged.fml.common.Mod;
 public class SeamlessApiMod {
     public static final String MOD_ID = "seamlessapi";
 
-    public SeamlessApiMod(IEventBus modEventBus) {
+    public SeamlessApiMod() {
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         // No logic — purely a registry API
     }
 }

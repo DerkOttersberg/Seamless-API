@@ -13,14 +13,14 @@ Allows other mods to register food buffs, deconstruction hooks, and future integ
 
 [[dependencies.seamlessapi]]
 modId = "forge"
-type = "required"
+mandatory = true
 versionRange = "[47,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.seamlessapi]]
 modId = "minecraft"
-type = "required"
+mandatory = true
 versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
