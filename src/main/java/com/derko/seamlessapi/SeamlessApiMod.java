@@ -1,7 +1,8 @@
 package com.derko.seamlessapi;
 
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.common.Mod;
+import net.fabricmc.api.ModInitializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * SeamlessAPI mod.
@@ -10,7 +11,7 @@ import net.neoforged.fml.common.Mod;
  * (food buffs, deconstruction hooks, and future modules).
  * This mod contains no gameplay logic of its own — it only provides registration APIs.
  *
- * Example usage in another mod's constructor:
+ * Example usage in another mod's onInitialize():
  * <pre>
  *   SatiationAPI.registerFood("mymod:my_food",
  *       FoodBuffRegistration.builder()
@@ -21,11 +22,13 @@ import net.neoforged.fml.common.Mod;
  *           .build());
  * </pre>
  */
-@Mod(SeamlessApiMod.MOD_ID)
-public class SeamlessApiMod {
+public class SeamlessApiMod implements ModInitializer {
     public static final String MOD_ID = "seamlessapi";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    public SeamlessApiMod(IEventBus modEventBus) {
-        // No logic — purely a registry API
+    @Override
+    public void onInitialize() {
+        // No gameplay logic — purely a registry API
+        LOGGER.info("SeamlessAPI initialized.");
     }
 }
