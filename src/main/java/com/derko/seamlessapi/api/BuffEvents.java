@@ -2,6 +2,10 @@ package com.derko.seamlessapi.api;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
 /**
  * Event hooks for buff lifecycle.
  *
@@ -20,7 +24,58 @@ import net.minecraft.server.network.ServerPlayerEntity;
  */
 public final class BuffEvents {
 
+    private static final List<Consumer<BuffAppliedEvent>> APPLIED_LISTENERS = new ArrayList<>();
+    private static final List<Consumer<BuffRemovedEvent>> REMOVED_LISTENERS = new ArrayList<>();
+    private static final List<Consumer<BuffApplyingEvent>> APPLYING_LISTENERS = new ArrayList<>();
+
     private BuffEvents() {}
+
+    /** Register a listener that fires after a buff is applied. */
+    public static void onBuffApplied(Consumer<BuffAppliedEvent> listener) {
+        APPLIED_LISTENERS.add(listener);
+    }
+
+    /** Register a listener that fires after a buff is removed. */
+    public static void onBuffRemoved(Consumer<BuffRemovedEvent> listener) {
+        REMOVED_LISTENERS.add(listener);
+    }
+
+    /** Register a listener that fires before a buff is applied. */
+    public static void onBuffApplying(Consumer<BuffApplyingEvent> listener) {
+        APPLYING_LISTENERS.add(listener);
+    }
+
+    /** Internal fire helper for applied events. */
+    public static void fireBuffApplied(ServerPlayerEntity player, BuffData buff) {
+        if (APPLIED_LISTENERS.isEmpty()) {
+            return;
+        }
+        BuffAppliedEvent event = new BuffAppliedEvent(player, buff);
+        for (Consumer<BuffAppliedEvent> listener : APPLIED_LISTENERS) {
+            listener.accept(event);
+        }
+    }
+
+    /** Internal fire helper for removed events. */
+    public static void fireBuffRemoved(ServerPlayerEntity player, BuffData buff, BuffRemovedEvent.RemovalReason reason) {
+        if (REMOVED_LISTENERS.isEmpty()) {
+            return;
+        }
+        BuffRemovedEvent event = new BuffRemovedEvent(player, buff, reason);
+        for (Consumer<BuffRemovedEvent> listener : REMOVED_LISTENERS) {
+            listener.accept(event);
+        }
+    }
+
+    /** Internal fire helper for pre-apply events. */
+    public static BuffApplyingEvent fireBuffApplying(ServerPlayerEntity player, String foodSource,
+                                                     String primaryBuffId, double magnitude, double healthBonus) {
+        BuffApplyingEvent event = new BuffApplyingEvent(player, foodSource, primaryBuffId, magnitude, healthBonus);
+        for (Consumer<BuffApplyingEvent> listener : APPLYING_LISTENERS) {
+            listener.accept(event);
+        }
+        return event;
+    }
 
     /**
      * Fired when a buff is successfully applied to a player.
